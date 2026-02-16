@@ -1,11 +1,13 @@
 # Verba
 
-## The Golden RAGtriever - Community Edition ✨
+## The Golden RAGtriever - Backend API ✨
 
 [![Weaviate](https://img.shields.io/static/v1?label=powered%20by&message=Weaviate%20%E2%9D%A4&color=green&style=flat-square)](https://weaviate.io/)
-[![PyPi downloads](https://static.pepy.tech/personalized-badge/goldenverba?period=total&units=international_system&left_color=grey&right_color=orange&left_text=pip%20downloads)](https://pypi.org/project/goldenverba/) [![Docker support](https://img.shields.io/badge/Docker_support-%E2%9C%93-4c1?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/get-started/) [![Demo](https://img.shields.io/badge/Check%20out%20the%20demo!-yellow?&style=flat-square&logo=react&logoColor=white)](https://verba.weaviate.io/)
+[![PyPi downloads](https://static.pepy.tech/personalized-badge/goldenverba?period=total&units=international_system&left_color=grey&right_color=orange&left_text=pip%20downloads)](https://pypi.org/project/goldenverba/) [![Docker support](https://img.shields.io/badge/Docker_support-%E2%9C%93-4c1?style=flat-square&logo=docker&logoColor=white)](https://docs.docker.com/get-started/)
 
-Welcome to Verba: The Golden RAGtriever, an community-driven open-source application designed to offer an end-to-end, streamlined, and user-friendly interface for Retrieval-Augmented Generation (RAG) out of the box. In just a few easy steps, explore your datasets and extract insights with ease, either locally with Ollama and Huggingface or through LLM providers such as Anthrophic, Cohere, and OpenAI. This project is built with and for the community, please be aware that it might not be maintained with the same urgency as other Weaviate production applications. Feel free to contribute to the project and help us make Verba even better! <3
+Welcome to Verba: The Golden RAGtriever Backend API, an community-driven open-source application designed to offer a powerful backend REST API for Retrieval-Augmented Generation (RAG). This backend provides all the necessary endpoints for document ingestion, querying, and RAG operations, either locally with Ollama and Huggingface or through LLM providers such as Anthrophic, Cohere, and OpenAI. This project is built with and for the community. Feel free to contribute to the project and help us make Verba even better! <3
+
+**Note:** This version only includes the backend API. The frontend interface has been removed.
 
 ```
 pip install goldenverba
@@ -36,7 +38,9 @@ pip install goldenverba
 
 ## What Is Verba?
 
-Verba is a fully-customizable personal assistant utilizing [Retrieval Augmented Generation (RAG)](https://weaviate.io/rag#:~:text=RAG%20with%20Weaviate,accuracy%20of%20AI%2Dgenerated%20content.) for querying and interacting with your data, **either locally or deployed via cloud**. Resolve questions around your documents, cross-reference multiple data points or gain insights from existing knowledge bases. Verba combines state-of-the-art RAG techniques with Weaviate's context-aware database. Choose between different RAG frameworks, data types, chunking & retrieving techniques, and LLM providers based on your individual use-case.
+Verba is a powerful backend REST API utilizing [Retrieval Augmented Generation (RAG)](https://weaviate.io/rag#:~:text=RAG%20with%20Weaviate,accuracy%20of%20AI%2Dgenerated%20content.) for querying and interacting with your data, **either locally or deployed via cloud**. Resolve questions around your documents, cross-reference multiple data points or gain insights from existing knowledge bases. Verba combines state-of-the-art RAG techniques with Weaviate's context-aware database. Choose between different RAG frameworks, data types, chunking & retrieving techniques, and LLM providers based on your individual use-case.
+
+**This is a backend-only version** - all frontend components have been removed, providing you with a clean REST API for integration with your own applications.
 
 ## Open Source Spirit
 
@@ -104,12 +108,12 @@ Verba is a fully-customizable personal assistant utilizing [Retrieval Augmented 
 | Code                   | ✅          | Chunk Code files                                        |
 | JSON                   | ✅          | Chunk JSON files                                        |
 
-| 🆒 Cool Bonus            | Implemented     | Description                                             |
-| ------------------------ | --------------- | ------------------------------------------------------- |
-| Docker Support           | ✅              | Verba is deployable via Docker                          |
-| Customizable Frontend    | ✅              | Verba's frontend is fully-customizable via the frontend |
-| Vector Viewer            | ✅              | Visualize your data in 3D                               |
-| Multi-User Collaboration | out of scope ❌ | Multi-User Collaboration in Verba                       |
+| 🆒 Cool Bonus     | Implemented | Description                                 |
+| ----------------- | ----------- | ------------------------------------------- |
+| Docker Support    | ✅          | Verba is deployable via Docker              |
+| REST API          | ✅          | Comprehensive REST API for all operations   |
+| WebSocket Support | ✅          | Real-time streaming for generation & import |
+| Vector Viewer     | ✅          | Visualize your data via API endpoints       |
 
 | 🤝 RAG Libraries | Implemented | Description                        |
 | ---------------- | ----------- | ---------------------------------- |
@@ -119,11 +123,9 @@ Verba is a fully-customizable personal assistant utilizing [Retrieval Augmented 
 
 > Something is missing? Feel free to create a new issue or discussion with your idea!
 
-![Showcase of Verba](https://github.com/weaviate/Verba/blob/2.0.0/img/verba_screen.png)
-
 ---
 
-# Getting Started with Verba
+# Getting Started with Verba Backend API
 
 You have three deployment options for Verba:
 
@@ -161,37 +163,37 @@ You can set all API keys in the Verba frontend, but to make your life easier, we
 
 Below is a comprehensive list of the API keys and variables you may require:
 
-| Environment Variable   | Value                                                      | Description                                                                                                                   |
-| ---------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| WEAVIATE_URL_VERBA     | URL to your hosted Weaviate Cluster                        | Connect to your [WCS](https://console.weaviate.cloud/) Cluster                                                                |
-| WEAVIATE_API_KEY_VERBA | API Credentials to your hosted Weaviate Cluster            | Connect to your [WCS](https://console.weaviate.cloud/) Cluster                                                                |
-| ANTHROPIC_API_KEY      | Your Anthropic API Key                                     | Get Access to [Anthropic](https://www.anthropic.com/) Models                                                                  |
-| OPENAI_API_KEY         | Your OpenAI Key                                            | Get Access to [OpenAI](https://openai.com/) Models                                                                            |
-| OPENAI_EMBED_API_KEY         | Your OpenAI Key                                            | Use a different endpoint for embeddings                                                                            |
-| OPENAI_BASE_URL        | URL to OpenAI instance                                     | Models                                                                                                                        |
-| OPENAI_EMBED_BASE_URL        | URL to OpenAI instance                                     | Use a different endpoint for embeddings                                                                                                                        |
-| OPENAI_MODEL        | The name of the model to be used when selecting OpenAI as a Generator                                    | Default: the first model in the list returned by the endpoint                                                                                                                        |
-| OPENAI_EMBED_MODEL        | The name of the OpenAI embedding model to be used when selecting OpenAI as an Embedder                                    | Default: `text-embedding-3-small`                                                                                                                        |
-| OPENAI_CUSTOM_EMBED        | `true` \| `false`                                    | Allow Verba to recognize custom embedding model names (not only OpenAI ones)                                                                            |
-| COHERE_API_KEY         | Your API Key                                               | Get Access to [Cohere](https://cohere.com/) Models                                                                            |
-| GROQ_API_KEY           | Your Groq API Key                                          | Get Access to [Groq](https://groq.com/) Models                                                                                |
-| NOVITA_API_KEY         | Your Novita API Key                                        | Get Access to [Novita AI](https://novita.ai?utm_source=github_verba&utm_medium=github_readme&utm_campaign=github_link) Models |
-| OLLAMA_URL             | URL to your Ollama instance (e.g. http://localhost:11434 ) | Get Access to [Ollama](https://ollama.com/) Models                                                                            |
-| UNSTRUCTURED_API_KEY   | Your API Key                                               | Get Access to [Unstructured](https://docs.unstructured.io/welcome) Data Ingestion                                             |
-| UNSTRUCTURED_API_URL   | URL to Unstructured Instance                               | Get Access to [Unstructured](https://docs.unstructured.io/welcome) Data Ingestion                                             |
-| ASSEMBLYAI_API_KEY     | Your API Key                                               | Get Access to [AssemblyAI](https://assemblyai.com) Data Ingestion                                                             |
-| GITHUB_TOKEN           | Your GitHub Token                                          | Get Access to Data Ingestion via GitHub                                                                                       |
-| GITLAB_TOKEN           | Your GitLab Token                                          | Get Access to Data Ingestion via GitLab                                                                                       |
-| FIRECRAWL_API_KEY      | Your Firecrawl API Key                                     | Get Access to Data Ingestion via Firecrawl                                                                                    |
-| VOYAGE_API_KEY         | Your VoyageAI API Key                                      | Get Access to Embedding Models via VoyageAI                                                                                   |
-| EMBEDDING_SERVICE_URL  | URL to your Embedding Service Instance                     | Get Access to Embedding Models via [Weaviate Embedding Service](https://weaviate.io/developers/wcs/embeddings)                |
-| EMBEDDING_SERVICE_KEY  | Your Embedding Service Key                                 | Get Access to Embedding Models via [Weaviate Embedding Service](https://weaviate.io/developers/wcs/embeddings)                |
-| UPSTAGE_API_KEY        | Your Upstage API Key                                       | Get Access to [Upstage](https://upstage.ai/) Models                                                                           |
-| UPSTAGE_BASE_URL       | URL to Upstage instance                                    | Models                                                                                                                        |
-| DEFAULT_DEPLOYMENT     | Local, Weaviate, Custom, Docker                            | Set the default deployment mode                                                                                               |
-| SYSYEM_MESSAGE_PROMPT     | Prompt text value                            | Default value starts with: "You are Verba, a chatbot for..."                                                                                               |
-| OLLAMA_MODEL           | Your Ollama Model                                          | Set the default Ollama model to use                                                                                           |
-| OLLAMA_EMBED_MODEL     | Your Ollama Embedding Model                                | Set the default Ollama embedding model to use                                                                                 |
+| Environment Variable   | Value                                                                                  | Description                                                                                                                   |
+| ---------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| WEAVIATE_URL_VERBA     | URL to your hosted Weaviate Cluster                                                    | Connect to your [WCS](https://console.weaviate.cloud/) Cluster                                                                |
+| WEAVIATE_API_KEY_VERBA | API Credentials to your hosted Weaviate Cluster                                        | Connect to your [WCS](https://console.weaviate.cloud/) Cluster                                                                |
+| ANTHROPIC_API_KEY      | Your Anthropic API Key                                                                 | Get Access to [Anthropic](https://www.anthropic.com/) Models                                                                  |
+| OPENAI_API_KEY         | Your OpenAI Key                                                                        | Get Access to [OpenAI](https://openai.com/) Models                                                                            |
+| OPENAI_EMBED_API_KEY   | Your OpenAI Key                                                                        | Use a different endpoint for embeddings                                                                                       |
+| OPENAI_BASE_URL        | URL to OpenAI instance                                                                 | Models                                                                                                                        |
+| OPENAI_EMBED_BASE_URL  | URL to OpenAI instance                                                                 | Use a different endpoint for embeddings                                                                                       |
+| OPENAI_MODEL           | The name of the model to be used when selecting OpenAI as a Generator                  | Default: the first model in the list returned by the endpoint                                                                 |
+| OPENAI_EMBED_MODEL     | The name of the OpenAI embedding model to be used when selecting OpenAI as an Embedder | Default: `text-embedding-3-small`                                                                                             |
+| OPENAI_CUSTOM_EMBED    | `true` \| `false`                                                                      | Allow Verba to recognize custom embedding model names (not only OpenAI ones)                                                  |
+| COHERE_API_KEY         | Your API Key                                                                           | Get Access to [Cohere](https://cohere.com/) Models                                                                            |
+| GROQ_API_KEY           | Your Groq API Key                                                                      | Get Access to [Groq](https://groq.com/) Models                                                                                |
+| NOVITA_API_KEY         | Your Novita API Key                                                                    | Get Access to [Novita AI](https://novita.ai?utm_source=github_verba&utm_medium=github_readme&utm_campaign=github_link) Models |
+| OLLAMA_URL             | URL to your Ollama instance (e.g. http://localhost:11434 )                             | Get Access to [Ollama](https://ollama.com/) Models                                                                            |
+| UNSTRUCTURED_API_KEY   | Your API Key                                                                           | Get Access to [Unstructured](https://docs.unstructured.io/welcome) Data Ingestion                                             |
+| UNSTRUCTURED_API_URL   | URL to Unstructured Instance                                                           | Get Access to [Unstructured](https://docs.unstructured.io/welcome) Data Ingestion                                             |
+| ASSEMBLYAI_API_KEY     | Your API Key                                                                           | Get Access to [AssemblyAI](https://assemblyai.com) Data Ingestion                                                             |
+| GITHUB_TOKEN           | Your GitHub Token                                                                      | Get Access to Data Ingestion via GitHub                                                                                       |
+| GITLAB_TOKEN           | Your GitLab Token                                                                      | Get Access to Data Ingestion via GitLab                                                                                       |
+| FIRECRAWL_API_KEY      | Your Firecrawl API Key                                                                 | Get Access to Data Ingestion via Firecrawl                                                                                    |
+| VOYAGE_API_KEY         | Your VoyageAI API Key                                                                  | Get Access to Embedding Models via VoyageAI                                                                                   |
+| EMBEDDING_SERVICE_URL  | URL to your Embedding Service Instance                                                 | Get Access to Embedding Models via [Weaviate Embedding Service](https://weaviate.io/developers/wcs/embeddings)                |
+| EMBEDDING_SERVICE_KEY  | Your Embedding Service Key                                                             | Get Access to Embedding Models via [Weaviate Embedding Service](https://weaviate.io/developers/wcs/embeddings)                |
+| UPSTAGE_API_KEY        | Your Upstage API Key                                                                   | Get Access to [Upstage](https://upstage.ai/) Models                                                                           |
+| UPSTAGE_BASE_URL       | URL to Upstage instance                                                                | Models                                                                                                                        |
+| DEFAULT_DEPLOYMENT     | Local, Weaviate, Custom, Docker                                                        | Set the default deployment mode                                                                                               |
+| SYSYEM_MESSAGE_PROMPT  | Prompt text value                                                                      | Default value starts with: "You are Verba, a chatbot for..."                                                                  |
+| OLLAMA_MODEL           | Your Ollama Model                                                                      | Set the default Ollama model to use                                                                                           |
+| OLLAMA_EMBED_MODEL     | Your Ollama Embedding Model                                                            | Set the default Ollama embedding model to use                                                                                 |
 
 ![API Keys in Verba](https://github.com/weaviate/Verba/blob/2.0.0/img/api_screen.png)
 
@@ -252,6 +254,7 @@ You can also add a `OPENAI_BASE_URL` to use proxies such as LiteLLM (https://git
 ```
 OPENAI_BASE_URL=YOUR-OPENAI_BASE_URL
 ```
+
 ### OpenAI Embeddings
 
 To specify a different endpoint for your embeddings, set the `OPENAI_EMBED_API_KEY` and `OPENAI_EMBED_BASE_URL` environment variables.
@@ -443,36 +446,28 @@ You can learn more about Verba's architecture and implementation in its [technic
 ## FAQ
 
 - **Can I use pre-existing data from my Weaviate instance?**
-
   - No, unfortunatley not. Verba requires the data to be in a specific format to work. And as of now, this is only possible by importing data through the Verba UI.
 
 - **Is Verba Multi-Lingual?**
-
   - This depends on your choosen Embedding and Generation Model whether they support multi-lingual data.
 
 - **Can I use my Ollama Server with the Verba Docker?**
-
   - Yes, you can! Make sure the URL is set to: `OLLAMA_URL=http://host.docker.internal:11434`
   - If you're running on Linux, you might need to get the IP Gateway of the Ollama server: `OLLAMA_URL="http://YOUR-IP-OF-OLLAMA:11434"`
 
 - **How to clear Weaviate Embedded Storage?**
-
   - You'll find the stored data here: `~/.local/share/weaviate`
 
 - **How can I specify the port?**
-
   - You can use the port and host flag `verba start --port 9000 --host 0.0.0.0`
 
 - **Can multiple users use Verba at the same time? How about role based access?**
-
   - Verba is designed and optimized for single user usage only. There are no plans on supporting multiple users or role based access in the near future.
 
 - **Does Verba offer a API endpoint to use externally?**
-
   - No, right now Verba does not offer any useful API endpoints to interact with the application. The current FastAPI setup is optimized for the internal communication between the frontend and backend. It is not recommended to use it as a API endpoint. There are plans to add user-friendly
 
 - **How to connect to your custom OpenAI Server?**
-
   - Set your custom OpenAI API Key and URL in the `.env` file, this will allow Verba to start up and retrieve the models from your custom OpenAI Server. `OPENAI_BASE_URL` is set to `https://api.openai.com/v1` by default.
   - You can also set a different endpoint for your embeddings by configuring the `OPENAI_EMBED_API_KEY` and `OPENAI_EMBED_BASE_URL` environment variables and setting `OPENAI_CUSTOM_EMBED=true`. For more details, see [OpenAI Embeddings](#openai-embeddings).
 

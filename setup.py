@@ -12,7 +12,7 @@ setup(
     },
     author="Weaviate",
     author_email="edward@weaviate.io",
-    description="Welcome to Verba: The Golden RAGtriever, an open-source initiative designed to offer a streamlined, user-friendly interface for Retrieval-Augmented Generation (RAG) applications. In just a few easy steps, dive into your data and make meaningful interactions!",
+    description="Verba: The Golden RAGtriever Backend API - A powerful REST API for Retrieval-Augmented Generation (RAG) applications, designed for seamless integration with Weaviate vector database.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/weaviate/Verba",

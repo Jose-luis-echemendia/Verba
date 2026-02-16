@@ -1,15 +1,13 @@
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
-from fastapi.staticfiles import StaticFiles
 import asyncio
 
 from goldenverba.server.helpers import LoggerManager, BatchManager
 from weaviate.client import WeaviateAsyncClient
 
 import os
-from pathlib import Path
 
 from dotenv import load_dotenv
 from starlette.websockets import WebSocketDisconnect
@@ -112,25 +110,6 @@ async def check_same_origin(request: Request, call_next):
 
         # Allow non-API routes to pass through
         return await call_next(request)
-
-
-BASE_DIR = Path(__file__).resolve().parent
-
-# Serve the assets (JS, CSS, images, etc.)
-app.mount(
-    "/static/_next",
-    StaticFiles(directory=BASE_DIR / "frontend/out/_next"),
-    name="next-assets",
-)
-
-# Serve the main page and other static files
-app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend/out"), name="app")
-
-
-@app.get("/")
-@app.head("/")
-async def serve_frontend():
-    return FileResponse(os.path.join(BASE_DIR, "frontend/out/index.html"))
 
 
 ### INITIAL ENDPOINTS

@@ -16,6 +16,7 @@ from wasabi import msg  # type: ignore[import]
 from goldenverba import verba_manager
 
 from goldenverba.server.types import (
+    WelcomeResponse,
     ResetPayload,
     QueryPayload,
     GeneratePayload,
@@ -36,6 +37,7 @@ from goldenverba.server.types import (
     DataBatchPayload,
     ChunksPayload,
 )
+
 
 load_dotenv()
 
@@ -64,7 +66,15 @@ async def lifespan(app: FastAPI):
 
 
 # FastAPI App
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title="Verba Backend API",
+    description=(
+        "API backend para Verba (RAG) con endpoints de configuración, consulta, "
+        "documentos, sugerencias y administración."
+    ),
+    version="2.1.3",
+)
 
 # Allow requests only from the same origin
 app.add_middleware(
@@ -79,6 +89,7 @@ app.add_middleware(
 # Custom middleware to check if the request is from the same origin
 @app.middleware("http")
 async def check_same_origin(request: Request, call_next):
+    """Valida el origen para solicitudes a rutas /api/* (excepto /api/health)."""
     # Allow public access to /api/health
     if request.url.path == "/api/health":
         return await call_next(request)
@@ -115,9 +126,25 @@ async def check_same_origin(request: Request, call_next):
 ### INITIAL ENDPOINTS
 
 
+
+# ===========================================================================
+#               --- Endpoint raíz de bienvenida. ---
+# ===========================================================================
+
+@app.get("/", response_model=WelcomeResponse)
+def read_root():
+    """Devuelve información básica del servicio y su versión."""
+    return WelcomeResponse(
+        message=f"Welcome to {app.title}",
+        project=app.title,
+        version=app.version,
+    )
+
+
 # Define health check endpoint
 @app.get("/api/health")
 async def health_check():
+    """Health check del backend y estado de despliegue."""
 
     await client_manager.clean_up()
 
@@ -139,6 +166,7 @@ async def health_check():
 
 @app.post("/api/connect")
 async def connect_to_verba(payload: ConnectPayload):
+    """Conecta al backend con credenciales y retorna configuraciones iniciales."""
     try:
         client = await client_manager.connect(payload.credentials, payload.port)
         if isinstance(
@@ -181,6 +209,7 @@ async def connect_to_verba(payload: ConnectPayload):
 
 @app.websocket("/ws/generate_stream")
 async def websocket_generate_stream(websocket: WebSocket):
+    """WebSocket para streaming de generación de respuestas RAG."""
     await websocket.accept()
     while True:  # Start a loop to keep the connection alive.
         try:
@@ -216,6 +245,7 @@ async def websocket_generate_stream(websocket: WebSocket):
 
 @app.websocket("/ws/import_files")
 async def websocket_import_files(websocket: WebSocket):
+    """WebSocket para importación asíncrona de archivos en lotes."""
 
     if production == "Demo":
         return
@@ -249,6 +279,7 @@ async def websocket_import_files(websocket: WebSocket):
 # Get Configuration
 @app.post("/api/get_rag_config")
 async def retrieve_rag_config(payload: Credentials):
+    """Obtiene la configuración RAG almacenada en Weaviate."""
     try:
         client = await client_manager.connect(payload)
         config = await manager.load_rag_config(client)
@@ -269,6 +300,7 @@ async def retrieve_rag_config(payload: Credentials):
 
 @app.post("/api/set_rag_config")
 async def update_rag_config(payload: SetRAGConfigPayload):
+    """Actualiza la configuración RAG en Weaviate."""
     if production == "Demo":
         return JSONResponse(
             content={
@@ -297,6 +329,7 @@ async def update_rag_config(payload: SetRAGConfigPayload):
 
 @app.post("/api/get_user_config")
 async def retrieve_user_config(payload: Credentials):
+    """Obtiene la configuración de usuario almacenada en Weaviate."""
     try:
         client = await client_manager.connect(payload)
         config = await manager.load_user_config(client)
@@ -317,6 +350,7 @@ async def retrieve_user_config(payload: Credentials):
 
 @app.post("/api/set_user_config")
 async def update_user_config(payload: SetUserConfigPayload):
+    """Actualiza la configuración de usuario en Weaviate."""
     if production == "Demo":
         return JSONResponse(
             content={
@@ -347,6 +381,7 @@ async def update_user_config(payload: SetUserConfigPayload):
 # Get Configuration
 @app.post("/api/get_theme_config")
 async def retrieve_theme_config(payload: Credentials):
+    """Obtiene la configuración de temas almacenada en Weaviate."""
     try:
         client = await client_manager.connect(payload)
         theme, themes = await manager.load_theme_config(client)
@@ -368,6 +403,7 @@ async def retrieve_theme_config(payload: Credentials):
 
 @app.post("/api/set_theme_config")
 async def update_theme_config(payload: SetThemeConfigPayload):
+    """Actualiza la configuración de temas en Weaviate."""
     if production == "Demo":
         return JSONResponse(
             content={
@@ -402,6 +438,7 @@ async def update_theme_config(payload: SetThemeConfigPayload):
 # Receive query and return chunks and query answer
 @app.post("/api/query")
 async def query(payload: QueryPayload):
+    """Ejecuta una consulta RAG y devuelve documentos relevantes y contexto."""
     msg.good(f"Received query: {payload.query}")
     try:
         client = await client_manager.connect(payload.credentials)
@@ -426,6 +463,7 @@ async def query(payload: QueryPayload):
 # Retrieve specific document based on UUID
 @app.post("/api/get_document")
 async def get_document(payload: GetDocumentPayload):
+    """Recupera metadatos de un documento por UUID."""
     try:
         client = await client_manager.connect(payload.credentials)
         document = await manager.weaviate_manager.get_document(
@@ -470,6 +508,7 @@ async def get_document(payload: GetDocumentPayload):
 
 @app.post("/api/get_datacount")
 async def get_document_count(payload: DatacountPayload):
+    """Devuelve el conteo de documentos según filtros y embedder."""
     try:
         client = await client_manager.connect(payload.credentials)
         document_uuids = [document.uuid for document in payload.documentFilter]
@@ -492,6 +531,7 @@ async def get_document_count(payload: DatacountPayload):
 
 @app.post("/api/get_labels")
 async def get_labels(payload: Credentials):
+    """Lista etiquetas disponibles en el índice de documentos."""
     try:
         client = await client_manager.connect(payload)
         labels = await manager.weaviate_manager.get_labels(client)
@@ -512,6 +552,7 @@ async def get_labels(payload: Credentials):
 # Retrieve specific document based on UUID
 @app.post("/api/get_content")
 async def get_content(payload: GetContentPayload):
+    """Recupera contenido paginado de un documento."""
     try:
         client = await client_manager.connect(payload.credentials)
         content, maxPage = await manager.get_content(
@@ -534,6 +575,7 @@ async def get_content(payload: GetContentPayload):
 # Retrieve specific document based on UUID
 @app.post("/api/get_vectors")
 async def get_vectors(payload: GetVectorPayload):
+    """Devuelve los vectores asociados a un documento."""
     try:
         client = await client_manager.connect(payload.credentials)
         vector_groups = await manager.weaviate_manager.get_vectors(
@@ -558,6 +600,7 @@ async def get_vectors(payload: GetVectorPayload):
 # Retrieve specific document based on UUID
 @app.post("/api/get_chunks")
 async def get_chunks(payload: ChunksPayload):
+    """Obtiene chunks paginados de un documento."""
     try:
         client = await client_manager.connect(payload.credentials)
         chunks = await manager.weaviate_manager.get_chunks(
@@ -582,6 +625,7 @@ async def get_chunks(payload: ChunksPayload):
 # Retrieve specific document based on UUID
 @app.post("/api/get_chunk")
 async def get_chunk(payload: GetChunkPayload):
+    """Obtiene un chunk específico por UUID y embedder."""
     try:
         client = await client_manager.connect(payload.credentials)
         chunk = await manager.weaviate_manager.get_chunk(
@@ -606,6 +650,7 @@ async def get_chunk(payload: GetChunkPayload):
 ## Retrieve and search documents imported to Weaviate
 @app.post("/api/get_all_documents")
 async def get_all_documents(payload: SearchQueryPayload):
+    """Busca y pagina documentos importados en Weaviate."""
     try:
         client = await client_manager.connect(payload.credentials)
         documents, total_count = await manager.weaviate_manager.get_documents(
@@ -642,6 +687,7 @@ async def get_all_documents(payload: SearchQueryPayload):
 # Delete specific document based on UUID
 @app.post("/api/delete_document")
 async def delete_document(payload: GetDocumentPayload):
+    """Elimina un documento específico por UUID."""
     if production == "Demo":
         msg.warn("Can't delete documents when in Production Mode")
         return JSONResponse(status_code=200, content={})
@@ -662,6 +708,7 @@ async def delete_document(payload: GetDocumentPayload):
 
 @app.post("/api/reset")
 async def reset_verba(payload: ResetPayload):
+    """Resetea datos/configuración del sistema según el modo indicado."""
     if production == "Demo":
         return JSONResponse(status_code=200, content={})
 
@@ -688,6 +735,7 @@ async def reset_verba(payload: ResetPayload):
 # Get Status meta data
 @app.post("/api/get_meta")
 async def get_meta(payload: Credentials):
+    """Obtiene metadatos del clúster y colecciones en Weaviate."""
     try:
         client = await client_manager.connect(payload)
         node_payload, collection_payload = await manager.weaviate_manager.get_metadata(
@@ -715,6 +763,7 @@ async def get_meta(payload: Credentials):
 
 @app.post("/api/get_suggestions")
 async def get_suggestions(payload: GetSuggestionsPayload):
+    """Devuelve sugerencias de autocompletado basadas en una consulta."""
     try:
         client = await client_manager.connect(payload.credentials)
         suggestions = await manager.weaviate_manager.retrieve_suggestions(
@@ -735,6 +784,7 @@ async def get_suggestions(payload: GetSuggestionsPayload):
 
 @app.post("/api/get_all_suggestions")
 async def get_all_suggestions(payload: GetAllSuggestionsPayload):
+    """Lista y pagina todas las sugerencias almacenadas."""
     try:
         client = await client_manager.connect(payload.credentials)
         suggestions, total_count = (
@@ -759,6 +809,7 @@ async def get_all_suggestions(payload: GetAllSuggestionsPayload):
 
 @app.post("/api/delete_suggestion")
 async def delete_suggestion(payload: DeleteSuggestionPayload):
+    """Elimina una sugerencia específica por UUID."""
     try:
         client = await client_manager.connect(payload.credentials)
         await manager.weaviate_manager.delete_suggestions(client, payload.uuid)

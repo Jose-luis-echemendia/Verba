@@ -3,6 +3,13 @@ from pydantic import BaseModel
 from enum import Enum
 
 
+class WelcomeResponse(BaseModel):
+    """Respuesta del endpoint raíz."""
+
+    message: str
+    project: str
+    version: str | None = None
+
 class Credentials(BaseModel):
     deployment: Literal["Weaviate", "Docker", "Local", "Custom"]
     url: str

@@ -8,9 +8,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar y instalar dependencias Python
+# Copiar archivos necesarios para la instalación
 COPY setup.py setup.py
-COPY pyproject.toml pyproject.toml 2>/dev/null || true
+COPY README.md README.md
+COPY MANIFEST.in MANIFEST.in
 COPY goldenverba/ goldenverba/
 
 RUN pip install --no-cache-dir '.'
